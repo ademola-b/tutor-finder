@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+{% comment %} <html lang="en"
+    class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" 
+    data-assets-path=" {% static 'assets/' %} " data-template="vertical-menu-template-free">
+<head lang="en"> {% endcomment %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>
+        TutorFinder | {% block title %}{% endblock %}
+    </title>
+
+    {% block styles %}{% include "partials/styles.html" %}{% endblock styles %}
+    
+</head>
+<body>
+    {% block navbar %}
+    {% endblock navbar %}
+    {% block sidebar %}
+    {% endblock sidebar %}
+    
+    {% block body %}
+
+    {% endblock body %}
+
+    {% include 'partials/scripts.html' %}
+</body>
+</html>

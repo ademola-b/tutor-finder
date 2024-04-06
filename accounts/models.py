@@ -9,11 +9,13 @@ class User(AbstractUser):
         MALE = "M", "Male"
         FEMALE = "F", "Female"
     user_id = models.UUIDField(default=uuid.uuid4, primary_key=True, unique=True, editable=False)
+    email = models.EmailField(unique=True)
     middle_name = models.CharField(max_length=150, null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pic/', default='default.jpg')
     phone = models.CharField(max_length=15, null=True, blank=True)
     gender = models.CharField(max_length=7, choices=Sex.choices, default='other')
     address = models.TextField()
+    is_tutor = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
