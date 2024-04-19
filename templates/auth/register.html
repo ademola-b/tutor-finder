@@ -27,11 +27,11 @@
                     <div class="form-group">
                         {{form.password2}}
                     </div>
-                    <p> Are you a tutor? &emsp; {{form.is_tutor}}</p> 
+                    {% comment %} <p> Are you a tutor? &emsp; {{form.is_tutor}}</p>  {% endcomment %}
  
                   <div class="mt-3">
                     <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">SIGN UP</button>
-                </div>
+                  </div>
                                  
                   <div class="text-center mt-4 font-weight-light"> Have an account? <a href="{% url "auth:login" %}" class="text-primary">Login</a>
                   </div>

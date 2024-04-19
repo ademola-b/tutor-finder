@@ -44,21 +44,25 @@ class Tutor(models.Model):
 class TutorCredential(models.Model):
     class Credential(models.TextChoices):
         ID = "ID", "National ID"
-        CERT = "CERT", "Highest Certificate"
+        CERT = "CERTIFICATE", "Highest Certificate"
         CV = "CV", "Curriculum Vitae"
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
-    document = models.FileField(upload_to='tutor_credentials/', choices=Credential.choices)
+    document_name = models.CharField(max_length=20, choices=Credential.choices)
+    document = models.FileField(upload_to='tutor_credentials/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"User: {self.user.username}, Document: {self.document.name}, Uploaded at: {self.uploaded_at}"
+        return f"User: {self.tutor.user.username}, Document: {self.document_name}, Uploaded at: {self.uploaded_at}"
 
 class VerificationStatus(models.Model):
     credential = models.OneToOneField(TutorCredential, on_delete=models.CASCADE)
-    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='verified_by')
+    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='verified_by', null=True, blank=True)
     isVerified = models.BooleanField(default=False)
     rejection_reason = models.TextField(blank=True, null=True)
     verified_at = models.DateTimeField(null=True)
+
+    class Meta:
+        verbose_name_plural = "Verification Status"
 
     def __str__(self):
         return f"Tutor Credential: {self.credential}, Verified: {self.isVerified}"
