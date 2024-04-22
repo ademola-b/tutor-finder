@@ -19,7 +19,7 @@
       <div class="main-panel">
         <div class="content-wrapper">
           <div class="d-xl-flex justify-content-between align-items-start">
-            <h2 class="text-dark font-weight-bold mb-2"> Update Profile </h2>  
+            <h2 class="text-dark font-weight-bold mb-2"> Verification </h2>  
           </div>
           <div class="row">
             <div class="col-md-12"> 
@@ -66,12 +66,20 @@
                                             {% for doc in documents %}
                                               <tr> 
                                                 <td> {{doc.credential.document_name}}</td>
-                                              <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </td>
+                                              <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </label> </td>
                                               <td> {{doc.rejection_reason}} </td>
                                             </tr>
                                             {% endfor %}
                                           </tbody>
                                         </table>
+                                        <h4 class="card-title mt-5">Overall Status: 
+                                          {% if status.isVerified %} 
+                                          <label class="badge badge-success"> verified </label> 
+                                          {% else %} 
+                                          <label class="badge badge-warning"> not verified {% endif %}
+                                          
+                                        </h4>
+                                        
                                       </div>
                                     </div>
                                   </div>

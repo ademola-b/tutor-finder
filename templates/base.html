@@ -10,6 +10,7 @@
         TutorFinder | {% block title %}{% endblock %}
     </title>
 
+    {% block modal-script %}{% endblock modal-script %}
     {% block styles %}{% include "partials/styles.html" %}{% endblock styles %}
     
 </head>
@@ -22,9 +23,9 @@
     {% endblock sidebar %}
 
     {% endblock body %}
-
     
-
+    
+    
     {% include 'partials/scripts.html' %}
 </body>
 </html>

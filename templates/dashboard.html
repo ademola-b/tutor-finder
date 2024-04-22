@@ -21,7 +21,32 @@
             <div class="col-md-12"> 
               <div class="tab-content tab-transparent-content">
                 {% include "partials/messages.html" %}
-                  
+                {% if sessions %}
+                  {% if request.user.tutor %}
+                  {% else %}
+                    
+                  {% endif %}
+                  {% else %}
+                    <div class="row">
+                        <div class="col-12 grid-margin">
+                          <div class="card">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <div class="d-flex justify-content-between align-items-center mb-4">
+                                    {% if request.user.tutor %}
+                                      <h4 class="card-title mb-0">You don't have any ongoing sessions. check your <a href=""> pending requests </a></h4>
+                                    {% else %}
+                                      <h4 class="card-title mb-0">You don't have any ongoing sessions. <a href="{% url "finder:book_session" %}"> Book a session </a></h4>
+                                    {% endif %}
+                                  </div> 
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+              
+                  {% endif %}  
                      
               </div>
             </div>

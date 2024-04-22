@@ -1,0 +1,21 @@
+<div class="modal fade" id="profileModal{{forloop.counter}}" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal content goes here, displaying additional information -->
+            <div class="modal-header">
+                <h5 class="modal-title text-dark font-weight-bold">{{tutor.user.first_name}} Full Detail</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Include details to display here -->
+               <p class="text-dark">Bio: {{tutor.bio}}</p>
+               <p class="text-dark">Specialized Subject: {{tutor.specialized_subject}}</p>
+               <p class="text-dark">Qualifications: {{tutor.qualifications}}</p>
+               <p class="text-dark">Experience Year: {{tutor.experience_year}}</p>
+               <p class="text-dark">Hourly Rate: {{tutor.hourly_rate}}</p>
+               <p class="text-dark">Location: {{tutor.location}}</p>
+            </div>
+       
+        </div>
+    </div>
+</div>

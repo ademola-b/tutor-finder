@@ -92,7 +92,9 @@ class TutorVerificationView(View):
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         doc = VerificationStatus.objects.filter(credential__tutor__user = request.user)
-        return render(request, self.template_name, {'form':form, 'documents':doc})
+        status = Tutor.objects.get(user = request.user)
+
+        return render(request, self.template_name, {'form':form, 'documents':doc, 'status':status})
     
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)

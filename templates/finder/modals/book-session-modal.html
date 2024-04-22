@@ -1,0 +1,25 @@
+{% load crispy_forms_tags %}
+<div class="modal fade" id="bookSessionModal{{forloop.counter}}" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal content goes here, displaying additional information -->
+            <div class="modal-header">
+                <h5 class="modal-title">Book Session</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Include details to display here -->
+               <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="selectedTutor" id="id_tutor" value="{{tutor.tutor_id}}">
+                    {{form | crispy}}
+                    <div class="mt-3">
+                        <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">BOOK</button>
+                    </div>
+               </form>
+            </div>
+       
+        </div>
+    </div>
+</div>
+

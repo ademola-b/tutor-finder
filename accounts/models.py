@@ -34,12 +34,16 @@ class Tutor(models.Model):
     tutor_id = models.UUIDField(default=uuid.uuid4, primary_key=True, unique=True, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(null=True, blank=True)
-    specialized_subject = models.CharField(max_length=100)
+    specialized_subject = models.CharField(max_length=100, null=True, blank=True)
+    qualifications = models.TextField()
+    experience_year = models.PositiveIntegerField(default=0)
+    hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    location = models.TextField(help_text="city, state", null=True, blank=True)
     isAvailable = models.BooleanField(default=False)
     isVerified = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+        return f"username: {self.user.username}, verification:{self.isVerified}, availablity: {self.isAvailable}"
     
 class TutorCredential(models.Model):
     class Credential(models.TextChoices):
