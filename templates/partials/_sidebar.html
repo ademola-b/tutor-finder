@@ -2,31 +2,33 @@
   <ul class="nav">
     <li class="nav-item nav-category">Main</li>
     <li class="nav-item">
-      <a class="nav-link" href="index.html">
+      <a class="nav-link" href="{% url "finder:dashboard" %}">
         <span class="icon-bg"><i class="mdi mdi-cube menu-icon"></i></span>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
+    {% if not request.user.is_tutor %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "finder:book_session" %}">
+          <span class="icon-bg"><i class="mdi mdi-contacts menu-icon"></i></span>
+          <span class="menu-title">Book Session</span>
+        </a>
+      </li>
+    {% endif %}
     <li class="nav-item">
       <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
         <span class="icon-bg"><i class="mdi mdi-crosshairs-gps menu-icon"></i></span>
-        <span class="menu-title">UI Elements</span>
+        <span class="menu-title">Booked Sessions</span>
         <i class="menu-arrow"></i>
       </a>
       <div class="collapse" id="ui-basic">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-          <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Dropdowns</a></li>
-          <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
-        </ul>
+          <li class="nav-item"> <a class="nav-link" href="{% url "finder:pending_session" %}">Pending</a></li>
+          <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Ended/Terminated</a></li>
+          </ul>
       </div>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="pages/icons/mdi.html">
-        <span class="icon-bg"><i class="mdi mdi-contacts menu-icon"></i></span>
-        <span class="menu-title">Icons</span>
-      </a>
-    </li>
+    
     <li class="nav-item">
       <a class="nav-link" href="pages/forms/basic_elements.html">
         <span class="icon-bg"><i class="mdi mdi-format-list-bulleted menu-icon"></i></span>

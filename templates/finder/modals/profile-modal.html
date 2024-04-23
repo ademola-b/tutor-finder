@@ -8,12 +8,48 @@
             </div>
             <div class="modal-body">
                 <!-- Include details to display here -->
-               <p class="text-dark">Bio: {{tutor.bio}}</p>
-               <p class="text-dark">Specialized Subject: {{tutor.specialized_subject}}</p>
-               <p class="text-dark">Qualifications: {{tutor.qualifications}}</p>
-               <p class="text-dark">Experience Year: {{tutor.experience_year}}</p>
-               <p class="text-dark">Hourly Rate: {{tutor.hourly_rate}}</p>
-               <p class="text-dark">Location: {{tutor.location}}</p>
+                {% if request.user.is_tutor %}
+                    {% if requests %}
+                        <p class="text-dark">Bio: {{req.student.bio}}</p>
+                        <p class="text-dark">Education Level: {{req.student.education_level}}</p>
+                        <p class="text-dark">Subject Interest: {{req.student.subject_interest}}</p>
+                        <p class="text-dark">Gender: {{req.student.user.gender}}</p>     
+                        <p class="text-dark">Phone: {{req.student.user.phone}}</p>     
+                        <p class="text-dark">Email: {{req.student.user.email}}</p>     
+                        <p class="text-dark">Location: {{req.student.user.address}}</p>     
+                        {% else %}
+                            <p class="text-dark">Bio: {{student.bio}}</p>
+                            <p class="text-dark">Education Level: {{student.education_level}}</p>
+                            <p class="text-dark">Subject Interest: {{student.subject_interest}}</p>
+                            <p class="text-dark">Gender: {{student.user.gender}}</p>     
+                            <p class="text-dark">Phone: {{student.user.phone}}</p>     
+                            <p class="text-dark">Email: {{student.user.email}}</p>     
+                            <p class="text-dark">Location: {{student.user.address}}</p>     
+                    {% endif %}
+                {% else %}
+                    {% if requests %}
+                        <p class="text-dark">Bio: {{req.tutor.bio}}</p>
+                        <p class="text-dark">Specialized Subject: {{req.tutor.specialized_subject}}</p>
+                        <p class="text-dark">Qualifications: {{req.tutor.qualifications}}</p>
+                        <p class="text-dark">Experience Year: {{req.tutor.experience_year}}</p>
+                        <p class="text-dark">Hourly Rate: {{req.tutor.hourly_rate}}</p>
+                        <p class="text-dark">Gender: {{req.tutor.user.gender}}</p>     
+                        <p class="text-dark">Phone: {{req.tutor.user.phone}}</p>     
+                        <p class="text-dark">Email: {{req.tutor.user.email}}</p>  
+                        <p class="text-dark">Location: {{req.tutor.location}}</p>     
+                    {% else %}
+                        <p class="text-dark">Bio: {{tutor.bio}}</p>
+                        <p class="text-dark">Specialized Subject: {{tutor.specialized_subject}}</p>
+                        <p class="text-dark">Qualifications: {{tutor.qualifications}}</p>
+                        <p class="text-dark">Experience Year: {{tutor.experience_year}}</p>
+                        <p class="text-dark">Hourly Rate: {{tutor.hourly_rate}}</p>
+                        <p class="text-dark">Gender: {{req.tutor.user.gender}}</p>     
+                        <p class="text-dark">Phone: {{req.tutor.user.phone}}</p>     
+                        <p class="text-dark">Email: {{req.tutor.user.email}}</p>
+                        <p class="text-dark">Location: {{tutor.location}}</p>
+                    {% endif %}
+                {% endif %}
+               
             </div>
        
         </div>

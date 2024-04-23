@@ -115,6 +115,8 @@ class TutorVerificationView(View):
             messages.warning(request, f"{form.errors.as_text()}")
         return render(request, self.template_name, {'form':form})
 
-
+def logout_request(request):
+    logout(request)
+    return redirect('auth:login')
 
 

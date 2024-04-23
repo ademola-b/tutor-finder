@@ -13,10 +13,12 @@ class SessionBook(models.Model):
     duration = models.CharField(help_text="10days", max_length=20, null=True, blank=True)
     status = models.CharField(max_length=15, default="pending", choices=[
         ('pending', 'pending'),
-        ('approved', 'approved'),
         ('ongoing', 'ongoing'),
-        ('ended', 'ended')
+        ('rejected', 'rejected'),
+        ('ended', 'ended'),
+        ('terminated', 'terminated')
     ])
+    termination_reason = models.TextField(default="idk")
 
     class Meta:
         verbose_name_plural = "Booked Sessions"

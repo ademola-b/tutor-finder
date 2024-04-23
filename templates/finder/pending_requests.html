@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block modal-script %}{% include "partials/modal-scripts.html" %}{% endblock modal-script %}
+{% block title %}Pending Requests{% endblock title %}
+
+{% block body %}
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% block navbar %}{% include "partials/_navbar.html" %}{% endblock navbar %}
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      
+        {% block sidebar %}{% include "partials/_sidebar.html" %}{% endblock sidebar %}
+
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          
+          <div class="row">
+            <div class="col-md-12"> 
+              <div class="tab-content tab-transparent-content">
+                {% include "partials/messages.html" %}
+                <h2 class="text-dark font-weight-bold mb-2"> Pending Requests </h2>
+                 {% if requests %}
+                    <div class="row">
+                        {% for req in requests %}
+                            <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <img src="{% static "assets/images/books.png" %}" style="border-radius: 100%" width="100" height="100" alt="tutor_img"/>
+                                            </div>
+                                            <div class="col-12">
+                                                {% if request.user.is_tutor %}
+                                                    <p class="mb-2 mt-2 text-dark">from</p>
+                                                    <h5 class="mb-2 text-dark">{{req.student.user.first_name}} {{req.student.user.last_name}}</h5>
+                                                {% else %}
+                                                    <p class="mb-2 mt-2 text-dark">with</p>
+                                                    <h5 class="mb-2 text-dark">{{req.tutor.user.first_name}} {{req.tutor.user.last_name}}</h5>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-2">
+                                            {% if request.user.is_tutor %}
+                                                <div class="col-6">
+                                                    <button type="button" class="btn btn" data-toggle="modal" data-target="#profileModal{{forloop.counter}}">
+                                                        <p class="text-success">View Student Profile</p> 
+                                                    </button>
+                                                </div>
+                                            {% else %}
+                                                <div class="col-6">
+                                                    <button type="button" class="btn btn" data-toggle="modal" data-target="#profileModal{{forloop.counter}}">
+                                                        <p class="text-success">View Tutor Profile</p> 
+                                                    </button>
+                                                </div>
+                                            {% endif %}
+                                            <div class="col-6">
+                                                <button type="button" class="openForm btn btn" data-toggle="modal" data-target="#pendingRequestModal{{forloop.counter}}">
+                                                    <p class="text-success">View Tutor Detail</p>                                                
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            {% if request.user.is_tutor %}
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#reqConModal{{forloop.counter}}">Action</button>
+                                                </div>
+                                                {% comment %} <div class="col 6">
+                                                    <button type="button" class="btn btn-outline-success">Accept</button>
+                                                </div>  {% endcomment %}
+                                            {% else %}
+                                                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{forloop.counter}}">Delete</button>
+                                            {% endif %} 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% include "finder/modals/profile-modal.html" %}
+                            {% include "finder/modals/delete-modal.html" %}
+                            {% include "finder/modals/pending-request-modal.html" %}
+                            {% include "finder/modals/request-confirmation-modal.html" %}
+                        {% endfor %}
+
+                    </div>
+                 {% else %}
+                    <div class="row">
+                        <div class="col-12 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="card-title text-warning mb-0">yaayy!🎉, You have no pending tutor requests</h5>
+                                </div> 
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 {% endif %}
+                     
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        {% include "partials/_footer.html" %}
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+
+
+{% endblock body %}

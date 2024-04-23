@@ -1,0 +1,19 @@
+<div class="modal fade" id="pendingRequestModal{{forloop.counter}}" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal content goes here, displaying additional information -->
+            <div class="modal-header">
+                <h5 class="modal-title text-dark font-weight-bold">Tutor Detail</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Include details to display here -->
+                    <p class="text-dark">Subject: {{req.subject}}</p>
+                    <p class="text-dark">Date Booked: {{req.date_booked}}</p>
+                    <p class="text-dark">Duration: {{req.duration}}</p>
+                    <p class="text-dark">Additional Note: {{req.additional_note}}</p>
+            </div>
+       
+        </div>
+    </div>
+</div>
