@@ -95,6 +95,28 @@ class PendingSessionAction(UpdateView):
             messages.success(request, "Tutor session rejected, and cannot be reversed.")
             return redirect(self.success_url)
 
+class SearchResult(ListView):
+    model = Tutor
+    template_name = "finder/search.html"
+    context_object_name = "avail_tutors"
+
+    def get_queryset(self):
+        qs = Tutor.objects.none()
+
+        if hasattr(self, 'modified_query'):
+            qs = self.modified_query
+            return qs
+    
+    def post(self, request, *args, **kwargs):
+        print("called")
+        query = request.POST.get('query')
+        self.modified_query = self.get_query(query)
+        return self.get(request, *args, **kwargs)
+    
+    def get_query(self, query):
+        return Tutor.objects.filter(specialized_subject__icontains = query) | Tutor.objects.filter(location__icontains = query)
+
+
 
         
     
