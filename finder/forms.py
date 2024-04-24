@@ -10,3 +10,10 @@ class BookSessionForm(forms.ModelForm):
             "additional_note",
             "duration",
         ]
+
+class TerminateSessionForm(forms.ModelForm):
+    class Meta:
+        model = SessionBook
+        fields = [
+            'termination_reason'
+        ]

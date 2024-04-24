@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View, ListView, DeleteView, UpdateView
 from accounts.models import Tutor, Student
 
-from . forms import BookSessionForm
+from . forms import BookSessionForm, TerminateSessionForm
 from . models import SessionBook
 
 
@@ -27,7 +27,7 @@ class DashboardView(View):
         else:
             sessions = SessionBook.objects.filter(student = request.user.student, status="ongoing")
 
-        return render(request, self.template_name, {'sessions':sessions})
+        return render(request, self.template_name, {'sessions':sessions, 'form':TerminateSessionForm()})
 
 @method_decorator(redirect_anonymous_user, name="get")
 class BookSessionView(View):
@@ -43,6 +43,7 @@ class BookSessionView(View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
+            print(f"called: {request.POST}")
             instance = form.save(commit=False)
             if 'selectedTutor' in request.POST:
                 instance.tutor = Tutor.objects.get(tutor_id = request.POST['selectedTutor'])
@@ -97,9 +98,11 @@ class PendingSessionAction(UpdateView):
 
 class SearchResult(ListView):
     model = Tutor
-    template_name = "finder/search.html"
+    template_name = "finder/available_tutors.html"
     context_object_name = "avail_tutors"
+    form_class = BookSessionForm
 
+    
     def get_queryset(self):
         qs = Tutor.objects.none()
 
@@ -108,13 +111,39 @@ class SearchResult(ListView):
             return qs
     
     def post(self, request, *args, **kwargs):
-        print("called")
+        # print(request.POST)
         query = request.POST.get('query')
         self.modified_query = self.get_query(query)
         return self.get(request, *args, **kwargs)
     
     def get_query(self, query):
         return Tutor.objects.filter(specialized_subject__icontains = query) | Tutor.objects.filter(location__icontains = query)
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class()
+        return context
+
+class TerminateSessionView(UpdateView):
+    model = SessionBook
+    fields = ['termination_reason']
+    template_name = "dashboard.html"
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        print("posted")
+        print(request.POST)
+
+        if 'terminate' in request.POST:
+            session = SessionBook.objects.get(session_id=pk)
+            session.terminator = request.user
+            session.termination_reason = request.POST['termination_reason']
+            session.status = "terminated"
+            session.save()
+            messages.success(request, "Tutor Session has been terminated.")
+            return redirect("finder:dashboard")
+       
+    
 
 
 

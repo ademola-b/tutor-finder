@@ -25,62 +25,89 @@
                 {% include "partials/messages.html" %}
                 {% if sessions %}
                   {% if request.user.tutor %}
-                  <div class="row">
-                    {% for session in sessions %}
-                        <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <img src="{% static "assets/images/books.png" %}" style="border-radius: 100%" width="100" height="100" alt="tutor_img"/>
-                                        </div>
-                                        <div class="col-12">
-                                          <p class="mb-2 mt-2 text-dark">with</p>
-                                            {% if request.user.is_tutor %}
-                                                <h5 class="mb-2 text-dark">{{session.student.user.first_name}} {{session.student.user.last_name}}</h5>
-                                            {% else %}
-                                                <h5 class="mb-2 text-dark">{{session.tutor.user.first_name}} {{session.tutor.user.last_name}}</h5>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mt-2">
-                                        {% if request.user.is_tutor %}
-                                            <div class="col-6">
-                                                <button type="button" class="btn btn" data-toggle="modal" data-target="#profileModal{{forloop.counter}}">
-                                                    <p class="text-success">View Student Profile</p> 
-                                                </button>
-                                            </div>
-                                        {% else %}
-                                            <div class="col-6">
-                                                <button type="button" class="btn btn" data-toggle="modal" data-target="#profileModal{{forloop.counter}}">
-                                                    <p class="text-success">View Tutor Profile</p> 
-                                                </button>
-                                            </div>
-                                        {% endif %}
-                                        <div class="col-6">
-                                            <button type="button" class="openForm btn btn" data-toggle="modal" data-target="#pendingRequestModal{{forloop.counter}}">
-                                                <p class="text-success">View Tutor Detail</p>                                                
-                                            </button>
-                                        </div>
-                                    </div>
+                    <div class="row">
+                      {% for session in sessions %}
+                          <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
+                              <div class="card">
+                                  <div class="card-body text-center">
+                                      <div class="row">
+                                          <div class="col-12">
+                                              <img src="{% static "assets/images/books.png" %}" style="border-radius: 100%" width="100" height="100" alt="tutor_img"/>
+                                          </div>
+                                          <div class="col-12">
+                                            <p class="mb-2 mt-2 text-dark">with</p>
+                                                  <h5 class="mb-2 text-dark">{{session.student.user.first_name}} {{session.student.user.last_name}}</h5> 
+                                          </div>
+                                      </div>
+                                      
+                                      <div class="row mt-2">
+                                          <div class="col-6">
+                                              <button type="button" class="btn btn" data-toggle="modal" data-target="#profileModal{{forloop.counter}}">
+                                                  <p class="text-success">View Student Profile</p> 
+                                              </button>
+                                          </div>
+                                          <div class="col-6">
+                                              <button type="button" class="openForm btn btn" data-toggle="modal" data-target="#pendingRequestModal{{forloop.counter}}">
+                                                  <p class="text-success">View Session Detail</p>                                                
+                                              </button>
+                                          </div>
+                                      </div>
 
-                                    <div class="row">
-                                      <div class="col-6">
-                                          <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#reqConModal{{forloop.counter}}">End</button>
+                                      <div class="row">
+                                        <div class="col-12">
+                                            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#terminateModal{{forloop.counter}}">Terminate</button>
+                                        </div>
                                       </div>
-                                      <div class="col-6">
-                                          <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#reqConModal{{forloop.counter}}">Terminate</button>
-                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          {% include "finder/modals/profile-modal.html" %}
+                          {% include "finder/modals/pending-request-modal.html" %}
+                          {% include "finder/modals/terminate-form.html" %}
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                      <div class="row">
+                        {% for session in sessions %}
+                            <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <img src="{% static "assets/images/books.png" %}" style="border-radius: 100%" width="100" height="100" alt="tutor_img"/>
+                                            </div>
+                                            <div class="col-12">
+                                              <p class="mb-2 mt-2 text-dark">with</p>
+                                              <h5 class="mb-2 text-dark">{{session.tutor.user.first_name}} {{session.tutor.user.last_name}}</h5>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-2">
+                                          <div class="col-6">
+                                              <button type="button" class="btn btn" data-toggle="modal" data-target="#profileModal{{forloop.counter}}">
+                                                  <p class="text-success">View Tutor Profile</p> 
+                                              </button>
+                                          </div>
+                                          <div class="col-6">
+                                              <button type="button" class="openForm btn btn" data-toggle="modal" data-target="#pendingRequestModal{{forloop.counter}}">
+                                                  <p class="text-success">View Session Detail</p>                                                
+                                              </button>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-12">
+                                              <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#terminateModal{{forloop.counter}}">Terminate</button>
+                                          </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {% include "finder/modals/profile-modal.html" %}
-                        {% include "finder/modals/pending-request-modal.html" %}
-                    {% endfor %}
-                  </div>
-                  {% else %}
+                            {% include "finder/modals/profile-modal.html" %}
+                            {% include "finder/modals/pending-request-modal.html" %}
+                            {% include "finder/modals/terminate-form.html" %}
+                        {% endfor %}
+                      </div>
                     
                   {% endif %}
                   {% else %}

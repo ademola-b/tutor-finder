@@ -1,7 +1,7 @@
 from django.urls import path
 from . views import (DashboardView, BookSessionView, 
                      PendingTutorSession, DeletePendingSession,
-                     PendingSessionAction, SearchResult)
+                     PendingSessionAction, SearchResult, TerminateSessionView)
 
 app_name = 'finder'
 urlpatterns = [
@@ -10,5 +10,6 @@ urlpatterns = [
     path('pending-requests/', PendingTutorSession.as_view(), name="pending_session"),
     path('requests/<uuid:pk>/delete/', DeletePendingSession.as_view(), name="delete_session"),
     path('requests/<uuid:pk>/action/', PendingSessionAction.as_view(), name="session_action"),
-    path('search-tutor/', SearchResult.as_view(), name="search_tutor")
+    path('search-tutor/', SearchResult.as_view(), name="search_tutor"),
+    path('terminate-session/<uuid:pk>/', TerminateSessionView.as_view(), name="terminate_session")
 ]

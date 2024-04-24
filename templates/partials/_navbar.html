@@ -16,7 +16,7 @@
             </div>
               <form action="{% url 'finder:search_tutor' %}" method="post">
                 {% csrf_token %}
-                <input type="text" class="form-control bg-transparent border-0" id="navbar-search-input" name="query" placeholder="Search Tutor by subject, city, state" aria-label="search" aria-describedby="search" style="width: 300px;">
+                <input type="text" class="form-control bg-transparent border-0" id="navbar-search-input" name="query" placeholder="Search Tutor by subject, city, state" aria-label="search" aria-describedby="search">
             </form>
           </div>
         {% endif %}

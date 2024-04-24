@@ -1,4 +1,5 @@
 import uuid
+from django.contrib.auth import get_user_model
 from django.db import models
 from accounts.models import Student, Tutor
 
@@ -18,6 +19,7 @@ class SessionBook(models.Model):
         ('ended', 'ended'),
         ('terminated', 'terminated')
     ])
+    terminator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
     termination_reason = models.TextField(default="idk")
 
     class Meta:
