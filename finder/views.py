@@ -75,6 +75,7 @@ class DeletePendingSession(DeleteView, SuccessMessageMixin):
     success_url = reverse_lazy('finder:pending_session')
     success_message = "Request Successfully Deleted"
 
+@method_decorator(redirect_anonymous_user, name="get")
 class PendingSessionAction(UpdateView):
     model = SessionBook
     fields = ['status']
@@ -124,16 +125,15 @@ class SearchResult(ListView):
         context['form'] = self.form_class()
         return context
 
+
+@method_decorator(redirect_anonymous_user, name="get")
 class TerminateSessionView(UpdateView):
     model = SessionBook
     fields = ['termination_reason']
     template_name = "dashboard.html"
 
     def post(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        print("posted")
-        print(request.POST)
-
+        pk = self.kwargs.get('pk')  
         if 'terminate' in request.POST:
             session = SessionBook.objects.get(session_id=pk)
             session.terminator = request.user
@@ -142,6 +142,21 @@ class TerminateSessionView(UpdateView):
             session.save()
             messages.success(request, "Tutor Session has been terminated.")
             return redirect("finder:dashboard")
+
+@method_decorator(redirect_anonymous_user, name="get")
+class TerminatedSessionsView(ListView):
+    model = SessionBook
+    context_object_name = "sessions"
+    template_name = "finder/terminated_sessions.html"
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_tutor:
+            sessions = SessionBook.objects.filter(tutor=user.tutor, status="terminated")
+        else:
+            sessions = SessionBook.objects.filter(student=user.student, status="terminated")
+        return sessions
+    
        
     
 

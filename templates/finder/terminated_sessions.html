@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terminated Sessions{% endblock title %}
+
+{% block body %}
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% block navbar %}{% include "partials/_navbar.html" %}{% endblock navbar %}
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      
+        {% block sidebar %}{% include "partials/_sidebar.html" %}{% endblock sidebar %}
+
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          
+          <div class="row">
+            <div class="col-md-12"> 
+              <div class="tab-content tab-transparent-content">
+                {% include "partials/messages.html" %}
+                <h2 class="text-dark font-weight-bold mb-2"> Terminated Sessions </h2>
+                 {% if sessions %}
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="row">
+                                    <table class="table table-hover">
+                                        {% if request.user.is_tutor %}
+                                            <thead>
+                                                <tr>
+                                                    <th>Student</th>
+                                                    <th>Subject</th>
+                                                    <th>Date Booked</th>
+                                                    <th>Note</th>
+                                                    <th>Duration</th>
+                                                    <th>Terminator</th>
+                                                    <th>Reason</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for session in sessions %}
+                                                    <tr>
+                                                        <td>{{session.student.user.first_name}} {{session.student.user.last_name}}
+                                                        <td>{{session.subject}}</td>
+                                                        <td>{{session.date_booked}}</td>
+                                                        <td>{{session.additional_note}}</td>
+                                                        <td>{{session.duration}}</td>
+                                                        <td>{% if session.terminator.is_tutor %}
+                                                            <label class="badge badge-info">tutor</label> 
+                                                        {% else %}
+                                                            <label class="badge badge-info">student</label>
+                                                        {% endif %}</td>
+                                                        <td>{{session.termination_reason}}</td>
+                                                    </tr>    
+                                                {% endfor %}
+                                            </tbody>
+                                        {% else %}
+                                            <thead>
+                                                <tr>
+                                                    <th>Tutor</th>
+                                                    <th>Subject</th>
+                                                    <th>Date Booked</th>
+                                                    <th>Note</th>
+                                                    <th>Duration</th>
+                                                    <th>Terminator</th>
+                                                    <th>Reason</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for session in sessions %}
+                                                    <tr>
+                                                        <td>{{session.tutor.user.first_name}} {{session.tutor.user.last_name}}
+                                                        <td>{{session.subject}}</td>
+                                                        <td>{{session.date_booked}}</td>
+                                                        <td>{{session.additional_note}}</td>
+                                                        <td>{{session.duration}}</td>
+                                                        <td>{% if session.terminator.is_tutor %}
+                                                                <label class="badge badge-info">tutor</label> 
+                                                            {% else %}
+                                                                <label class="badge badge-info">student</label>
+                                                            {% endif %}</td>
+                                                        <td>{{session.termination_reason}}</td>
+                                                    </tr>    
+                                                {% endfor %}
+                                            </tbody>
+                                        {% endif %}
+                                    </table>     
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                 {% else %}
+                    <div class="row">
+                        <div class="col-12 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="card-title text-warning mb-0"> No Terminated Sessions👌</h5>
+                                </div> 
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 {% endif %}
+                     
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        {% include "partials/_footer.html" %}
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+
+
+{% endblock body %}
