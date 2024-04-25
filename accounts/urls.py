@@ -1,6 +1,7 @@
 from django.urls import path
 from . views import (LoginView, RegisterView, logout_request,
-                     ProfileUpdateView, TutorVerificationView)
+                     ProfileUpdateView,
+                      TutorFormBView, TutorVerificationView)
 
 app_name = 'auth'
 urlpatterns = [
@@ -8,6 +9,7 @@ urlpatterns = [
     path('logout/', logout_request, name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('update-profile/', ProfileUpdateView.as_view(), name='update_profile'),
+    path('tutor-profile/', TutorFormBView.as_view(), name='tutor_profile'),
     path('verify/', TutorVerificationView.as_view(), name='verification'),
 
 ]

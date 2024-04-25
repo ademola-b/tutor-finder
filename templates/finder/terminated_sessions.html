@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% include "partials/scripts.html" %}
 {% block title %}Terminated Sessions{% endblock title %}
 
 {% block body %}
@@ -29,10 +29,14 @@
                             <div class="card-body text-center">
                                 <div class="row">
                                     <table class="table table-hover">
-                                        {% if request.user.is_tutor %}
                                             <thead>
                                                 <tr>
-                                                    <th>Student</th>
+                                                    {% if request.user.is_staff or not request.user.is_tutor %}
+                                                        <th>Tutor</th>
+                                                    {% endif %}
+                                                    {% if request.user.is_staff or request.user.is_tutor %}
+                                                        <th>Student</th>
+                                                    {% endif %}
                                                     <th>Subject</th>
                                                     <th>Date Booked</th>
                                                     <th>Note</th>
@@ -44,7 +48,12 @@
                                             <tbody>
                                                 {% for session in sessions %}
                                                     <tr>
-                                                        <td>{{session.student.user.first_name}} {{session.student.user.last_name}}
+                                                        {% if request.user.is_staff or not request.user.is_tutor %}
+                                                            <td>{{session.tutor.user.get_full_name}}</td>
+                                                        {% endif %}
+                                                        {% if request.user.is_staff or request.user.is_tutor %}
+                                                            <td>{{session.student.user.get_full_name}}</td>
+                                                        {% endif %}
                                                         <td>{{session.subject}}</td>
                                                         <td>{{session.date_booked}}</td>
                                                         <td>{{session.additional_note}}</td>
@@ -58,36 +67,6 @@
                                                     </tr>    
                                                 {% endfor %}
                                             </tbody>
-                                        {% else %}
-                                            <thead>
-                                                <tr>
-                                                    <th>Tutor</th>
-                                                    <th>Subject</th>
-                                                    <th>Date Booked</th>
-                                                    <th>Note</th>
-                                                    <th>Duration</th>
-                                                    <th>Terminator</th>
-                                                    <th>Reason</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for session in sessions %}
-                                                    <tr>
-                                                        <td>{{session.tutor.user.first_name}} {{session.tutor.user.last_name}}
-                                                        <td>{{session.subject}}</td>
-                                                        <td>{{session.date_booked}}</td>
-                                                        <td>{{session.additional_note}}</td>
-                                                        <td>{{session.duration}}</td>
-                                                        <td>{% if session.terminator.is_tutor %}
-                                                                <label class="badge badge-info">tutor</label> 
-                                                            {% else %}
-                                                                <label class="badge badge-info">student</label>
-                                                            {% endif %}</td>
-                                                        <td>{{session.termination_reason}}</td>
-                                                    </tr>    
-                                                {% endfor %}
-                                            </tbody>
-                                        {% endif %}
                                     </table>     
                                 </div>
                             </div>

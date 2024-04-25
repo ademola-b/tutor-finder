@@ -3,8 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import View, CreateView, UpdateView
-from . forms import LoginForm, SignUpForm, UserUpdateForm, TutorCredentialsForm
+
+from finder.decorators import user_profile_checker, redirect_anonymous_user
+from . forms import (LoginForm, SignUpForm, UserUpdateForm, 
+                     TutorUpdateForm, TutorCredentialsForm)
 from . models import Tutor, Student, TutorCredential, VerificationStatus
 # Create your views here.
 
@@ -51,7 +55,8 @@ class RegisterView(CreateView):
             messages.error(request, f"{form.errors.as_text()}")
 
         return render(request, self.template_name, {'form':form})
-    
+
+@method_decorator(redirect_anonymous_user, name="get")   
 class ProfileUpdateView(UpdateView):
     template_name = 'auth/update_profile.html'
     form = UserUpdateForm
@@ -70,13 +75,12 @@ class ProfileUpdateView(UpdateView):
                     instance.is_tutor = True
                     instance.save()
                     Tutor.objects.get_or_create(user = request.user)
-                    messages.success(request, "kindly upload your credentials to verify account")
-                    # return redirect("auth:verification")
-                    return redirect("finder:dashboard")
+                    messages.info(request, "kindly fill your information")
+                    return redirect("auth:tutor_profile")
                 else:
                     instance.save()
                     Student.objects.get_or_create(user=instance)
-                    messages.success(request, "Update your profile")
+                    messages.success(request, "Profile Updated")
                     return redirect("finder:dashboard")
             except IntegrityError:
                 messages.warning(request, "Error while updating form")
@@ -85,16 +89,48 @@ class ProfileUpdateView(UpdateView):
             messages.error(request, f"{form.errors.as_text()}")
         return render(request, self.template_name, {'form':form})
 
+@method_decorator(redirect_anonymous_user, name="get")   
+class TutorFormBView(UpdateView):
+    template_name = 'auth/tutor_profile.html'
+    form_class = TutorUpdateForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(instance=request.user)
+        return render(request, self.template_name, {'form':form})
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=request.user.tutor)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            
+            instance.isAvailable = True
+            instance.save()
+            messages.success(request, "Information Saved")
+            return redirect("finder:dashboard")
+        else:
+            messages.error(request, f"{form.errors.as_text()}")
+        return render(request, self.template_name, {'form':form})
+
+@method_decorator(redirect_anonymous_user, name="get")
 class TutorVerificationView(View):
     template_name = 'auth/verification.html'
     form_class = TutorCredentialsForm
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
-        doc = VerificationStatus.objects.filter(credential__tutor__user = request.user)
-        status = Tutor.objects.get(user = request.user)
-
-        return render(request, self.template_name, {'form':form, 'documents':doc, 'status':status})
+        if request.user.is_staff:
+            unverified_tutors = Tutor.objects.filter(isVerified=False)
+            context = {'tutors':unverified_tutors}
+        else:
+            try:
+                form = self.form_class()
+                doc = VerificationStatus.objects.filter(credential__tutor__user = request.user)
+                status = Tutor.objects.get(user = request.user)
+                context = {'form':form,'documents':doc, 'status':status}
+            except Tutor.DoesNotExist:
+                messages.warning(request, "Profile doesn't exist, update")
+                return redirect("auth:update_profile")
+        
+        return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
@@ -114,6 +150,7 @@ class TutorVerificationView(View):
         else:
             messages.warning(request, f"{form.errors.as_text()}")
         return render(request, self.template_name, {'form':form})
+
 
 def logout_request(request):
     logout(request)

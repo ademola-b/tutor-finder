@@ -57,6 +57,7 @@ class BookSessionView(View):
 
 
 @method_decorator(redirect_anonymous_user, name="get")
+@method_decorator(user_profile_checker, name="get")
 class PendingTutorSession(ListView):
     model = SessionBook
     template_name = "finder/pending_requests.html"
@@ -64,6 +65,9 @@ class PendingTutorSession(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         user = self.request.user
+        if user.is_staff:
+            return SessionBook.objects.filter(status="terminated")
+        
         if user.is_tutor:
             return SessionBook.objects.filter(tutor=user.tutor, status="pending")
         else:
@@ -103,7 +107,6 @@ class SearchResult(ListView):
     context_object_name = "avail_tutors"
     form_class = BookSessionForm
 
-    
     def get_queryset(self):
         qs = Tutor.objects.none()
 
@@ -112,7 +115,6 @@ class SearchResult(ListView):
             return qs
     
     def post(self, request, *args, **kwargs):
-        # print(request.POST)
         query = request.POST.get('query')
         self.modified_query = self.get_query(query)
         return self.get(request, *args, **kwargs)
@@ -127,6 +129,7 @@ class SearchResult(ListView):
 
 
 @method_decorator(redirect_anonymous_user, name="get")
+@method_decorator(user_profile_checker, name="get")
 class TerminateSessionView(UpdateView):
     model = SessionBook
     fields = ['termination_reason']
@@ -144,6 +147,7 @@ class TerminateSessionView(UpdateView):
             return redirect("finder:dashboard")
 
 @method_decorator(redirect_anonymous_user, name="get")
+@method_decorator(user_profile_checker, name="get")
 class TerminatedSessionsView(ListView):
     model = SessionBook
     context_object_name = "sessions"
@@ -151,6 +155,8 @@ class TerminatedSessionsView(ListView):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_staff:
+            return SessionBook.objects.filter(status="terminated")
         if user.is_tutor:
             sessions = SessionBook.objects.filter(tutor=user.tutor, status="terminated")
         else:

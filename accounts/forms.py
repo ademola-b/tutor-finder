@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 
-from . models import TutorCredential
+from . models import Tutor, TutorCredential
 
 
 class LoginForm(AuthenticationForm):
@@ -26,12 +26,7 @@ class SignUpForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-
-    # first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Enter your first name'}))
-    # middle_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Enter your middle name'}))
-    # last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Enter your last name'}))
     phone = forms.CharField(required=True, widget=forms.NumberInput())
-    # address = forms.CharField(required=True, widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Enter your phone number'}))
     is_tutor = forms.BooleanField(label='Are you a tutor?', required=False, widget=forms.CheckboxInput(attrs={'required': False}))
 
     class Meta:
@@ -46,8 +41,22 @@ class UserUpdateForm(forms.ModelForm):
             'is_tutor'
         ]
 
-class TutorCredentialsForm(forms.ModelForm):
+class TutorUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Tutor
+        fields = [
+            "bio",
+            "specialized_subject",
+            "qualifications",
+            "experience_year",
+            "hourly_rate",
+            "location"
+        ]
+
     
+
+class TutorCredentialsForm(forms.ModelForm):
     class Meta:
         model = TutorCredential
         fields = ["document_name", "document"]

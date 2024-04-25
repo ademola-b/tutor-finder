@@ -24,76 +24,111 @@
           <div class="row">
             <div class="col-md-12"> 
               <div class="tab-content tab-transparent-content">
-                  
                   <div class="row">
                     <div class="col-12 grid-margin">
                       <div class="card">
                         <div class="card-body">
                           <div class="row">
-                            <div class="col-sm-12">
-                              <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h4 class="card-title mb-0">Upload Documents</h4>
-                                {% include "partials/messages.html" %}
-                              </div>
-                            </div>
-                            <div class="col-lg-9 col-sm-4 grid-margin  grid-margin-lg-0">
-                              <div class="wrapper pb-5 border-bottom">
-                                <form action="" method="POST" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    {{form | crispy}}
-                                    <span class="text-warning">Note: only pdf files are allowed</span>
-                                    <div class="mt-3">
-                                        <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">UPLOAD</button>
-                                    </div>
-                                </form>
-                                {% if documents %}
-                                <div class="row">
-                                  <div class="col-lg-12 grid-margin stretch-card">
-                                    <div class="card">
-                                      <div class="card-body">
-                                        <h4 class="card-title">Uploaded Documents with status</h4>
-                                       
-                                        <table class="table table-hover">
-                                          <thead>
-                                            <tr>
-                                              <th>Document Name</th>
-                                              <th>Status</th>
-                                              <th>Reason</th>
-                                              <th> Action </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {% for doc in documents %}
-                                              <tr> 
-                                                <td> {{doc.credential.document_name}}</td>
-                                              <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </label> </td>
-                                              <td> {{doc.rejection_reason}} </td>
-                                            </tr>
-                                            {% endfor %}
-                                          </tbody>
-                                        </table>
-                                        <h4 class="card-title mt-5">Overall Status: 
-                                          {% if status.isVerified %} 
-                                            <label class="badge badge-success"> verified </label> 
-                                          {% else %} 
-                                            <label class="badge badge-warning"> not verified </label>
-                                          {% endif %}
-                                          
-                                        </h4>
-                                        
-                                      </div>
-                                    </div>
+                            {% include "partials/messages.html" %}
+                            {% if request.user.is_staff %}
+                              {% if tutors %}
+                                <div class="col-sm-12">
+                                  <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4 class="card-title mb-0">List of Unverified Tutors</h4>
                                   </div>
                                 </div>
-                                {% else %}
-                                  <div class="d-xl-flex justify-content-between align-items-start">
-                                    <h3 class="text-danger font-weight-bold mb-2 mt-2"> No file found </h3> 
-                                  </div> 
-                                {% endif %}
+                                <div class="col-lg-9 col-sm-4 grid-margin  grid-margin-lg-0">
+                                  <table class="table table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th>Tutor Name</th>
+                                        <th>Specialized Subject</th>
+                                        <th>Qualification</th>
+                                        <th>Experience Year</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for tutor in tutors %}
+                                        <tr>
+                                          <td>{{tutor.user.get_full_name}}</td>
+                                          <td>{{tutor.specialized_subject}}</td>
+                                          <td>{{tutor.qualifications}}</td>
+                                          <td>{{tutor.experience_year}}</td>
+                                        </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              {% else %}
+                                <div class="d-xl-flex justify-content-between align-items-start">
+                                  <h3 class="text-danger font-weight-bold mb-2 mt-2"> No unverified tutors </h3> 
+                                </div>  
+                              {% endif %}
+
+                            {% else %}
+                              <div class="col-sm-12">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                  <h4 class="card-title mb-0"> Upload Documents</h4>
+                                </div>
                               </div>
-                             
-                            </div>
-                            
+                              <div class="col-lg-9 col-sm-4 grid-margin  grid-margin-lg-0">
+                                <div class="wrapper pb-5 border-bottom">
+                                  <form action="" method="POST" enctype="multipart/form-data">
+                                      {% csrf_token %}
+                                      {{tutor_form | crispy}}
+                                      {{form | crispy}}
+                                      <span class="text-warning">Note: only pdf files are allowed</span>
+                                      <div class="mt-3">
+                                          <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">UPLOAD</button>
+                                      </div>
+                                  </form>
+                                  {% if documents %}
+                                    <div class="row">
+                                      <div class="col-lg-12 grid-margin stretch-card">
+                                        <div class="card">
+                                          <div class="card-body">
+                                            <h4 class="card-title">Uploaded Documents with status</h4>
+                                          
+                                            <table class="table table-hover">
+                                              <thead>
+                                                <tr>
+                                                  <th>Document Name</th>
+                                                  <th>Status</th>
+                                                  <th>Reason</th>
+                                                  <th> Action </th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {% for doc in documents %}
+                                                  <tr> 
+                                                    <td> {{doc.credential.document_name}}</td>
+                                                  <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </label> </td>
+                                                  <td> {{doc.rejection_reason}} </td>
+                                                </tr>
+                                                {% endfor %}
+                                              </tbody>
+                                            </table>
+                                            <h4 class="card-title mt-5">Overall Status: 
+                                              {% if status.isVerified %} 
+                                                <label class="badge badge-success"> verified </label> 
+                                              {% else %} 
+                                                <label class="badge badge-warning"> not verified </label>
+                                              {% endif %}
+                                              
+                                            </h4>
+                                            
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  {% else %}
+                                    <div class="d-xl-flex justify-content-between align-items-start">
+                                      <h3 class="text-danger font-weight-bold mb-2 mt-2"> No file found </h3> 
+                                    </div> 
+                                  {% endif %}
+                                </div>
+                              </div>  
+                            {% endif %}
                           </div>
                         </div>
                       </div>
