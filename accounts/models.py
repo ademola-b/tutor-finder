@@ -35,10 +35,10 @@ class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(null=True, blank=True)
     specialized_subject = models.CharField(max_length=100, null=True, blank=True)
-    qualifications = models.TextField()
+    qualifications = models.CharField(max_length=300)
     experience_year = models.PositiveIntegerField(default=0)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-    location = models.TextField(help_text="city, state", null=True, blank=True)
+    location = models.CharField(max_length=100, help_text="city, state", null=True, blank=True)
     isAvailable = models.BooleanField(default=False)
     isVerified = models.BooleanField(default=False)
 

@@ -24,6 +24,29 @@ class SignUpForm(UserCreationForm):
             # 'is_tutor'
         ]
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email',
+            'phone',
+            'gender',
+            'profile_pic',
+            'address',
+            ]
+        
+class TutorForm(forms.ModelForm):
+    class Meta:
+        model = Tutor
+        exclude = [
+            'user',
+            'isVerified'
+        ]
+
+
 
 class UserUpdateForm(forms.ModelForm):
     phone = forms.CharField(required=True, widget=forms.NumberInput())
@@ -42,7 +65,6 @@ class UserUpdateForm(forms.ModelForm):
         ]
 
 class TutorUpdateForm(forms.ModelForm):
-
     class Meta:
         model = Tutor
         fields = [

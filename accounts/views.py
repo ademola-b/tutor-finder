@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -8,7 +8,8 @@ from django.views.generic import View, CreateView, UpdateView
 
 from finder.decorators import user_profile_checker, redirect_anonymous_user
 from . forms import (LoginForm, SignUpForm, UserUpdateForm, 
-                     TutorUpdateForm, TutorCredentialsForm)
+                     TutorUpdateForm, TutorCredentialsForm,
+                     UserForm, TutorForm)
 from . models import Tutor, Student, TutorCredential, VerificationStatus
 # Create your views here.
 
@@ -286,6 +287,35 @@ class VerifyTutorView(View):
                 
     #     return render(request, self.template_name, {'docs':docs, 'tutor':tutor})
     
+class ProfileView(View):
+    template_name = "auth/profile.html"
+    user_form = UserForm
+    tutor_form = TutorForm
+
+    def get(self, request):
+        form = self.user_form(instance=request.user)
+        tutor_form = self.tutor_form(instance=request.user.tutor)
+        user_details = get_user_model().objects.get(user_id = request.user.user_id)
+        return render(request, self.template_name, {'form':form, 'user_details':user_details, 'tutor_form':tutor_form})
+    
+    def post(self, request):
+        form = self.user_form(request.POST, request.FILES, instance=request.user)
+        tutor_form = self.tutor_form(request.POST, instance=request.user.tutor)
+        print(request.POST)
+        if 'user' in request.POST:
+            if form.is_valid():
+                form.save()
+            else:
+                messages.warning(request, f"{form.errors.as_text()}")
+        
+        if 'tut' in request.POST:
+            if tutor_form.is_valid():
+                tutor_form.save()
+            else:
+                messages.warning(request, f"{form.errors.as_text()}")
+
+        messages.success(request, "Profile successfully updated")
+        return redirect(reverse("auth:profile"))
 
 def logout_request(request):
     logout(request)
