@@ -151,6 +151,138 @@ class TutorVerificationView(View):
             messages.warning(request, f"{form.errors.as_text()}")
         return render(request, self.template_name, {'form':form})
 
+@method_decorator(redirect_anonymous_user, name="get")
+class VerifyTutorView(View):
+    template_name = "auth/verify-tutor.html"
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        docs = VerificationStatus.objects.filter(credential__tutor__tutor_id = pk, isVerified=False)
+        tutor = Tutor.objects.get(tutor_id = pk)
+        return render(request, self.template_name, {'docs':docs, 'tutor':tutor})
+    
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        docs = VerificationStatus.objects.filter(credential__tutor__tutor_id=pk, isVerified=False)
+        tutor = Tutor.objects.get(tutor_id=pk)
+
+        # Create a dictionary to store the VerificationStatus instances for each document type
+        verification_status = {document_name: None for document_name, _ in TutorCredential.Credential.choices}
+
+        # Populate the dictionary with the VerificationStatus instances
+        for doc in docs:
+            verification_status[doc.credential.document_name] = doc
+        
+        print(f"verify: {verification_status}")
+
+        if 'submit' in request.POST:
+            verify_stat = {document_name: status_instance for document_name, status_instance in verification_status.items() if status_instance is not None}
+            for document_name, status_instance in verify_stat.items():
+                checkbox_name = f'{document_name}'
+                reason_name = f'reason_{document_name.lower()}'
+
+                if checkbox_name in request.POST:
+                    # Document checkbox is checked, update isVerified to True
+                    status_instance.isVerified = True
+                    status_instance.rejection_reason = "accepted"
+                else:
+                    # Document checkbox is not checked, update rejection reason if provided
+                    if reason_name in request.POST and request.POST[reason_name] != '':
+                        status_instance.rejection_reason = request.POST[reason_name]
+                    elif reason_name in request.POST and request.POST[reason_name] == '':
+                        messages.warning(request, f"State why the {document_name} is not being accepted")
+                        return redirect("auth:verify_tutor", pk)
+                
+                status_instance.admin = request.user
+                status_instance.save()
+                     
+            #update verification tag
+            verification_stat = {document_name: None for document_name, _ in TutorCredential.Credential.choices}
+            docObjs = VerificationStatus.objects.filter(credential__tutor__tutor_id = pk)
+            
+            for doc in docObjs:
+                verification_stat[doc.credential.document_name] = doc.isVerified
+            
+            all_verified = all(status is not None and status for status in verification_stat.values())
+            if all_verified:
+                tutor.isVerified = True
+                tutor.save()
+                # messages.info(request, "Tutor has been verified")
+            
+            messages.info(request, "Tutor's credentials has been assessed")
+            return redirect("auth:verification")
+
+        return render(request, self.template_name, {'docs': docs, 'tutor': tutor})
+
+    
+    # def post(self, request, *args, **kwargs):
+    #     print(request.POST)
+    #     pk = self.kwargs.get('pk')
+    #     docs = VerificationStatus.objects.filter(credential__tutor__tutor_id = pk, isVerified=False)
+    #     tutor = Tutor.objects.get(tutor_id = pk)
+
+    #     ID = VerificationStatus.objects.filter(credential__tutor__tutor_id=pk, credential__document_name='ID').first()
+    #     CV = VerificationStatus.objects.filter(credential__tutor__tutor_id=pk, credential__document_name='CV').first()
+    #     cert = VerificationStatus.objects.filter(credential__tutor__tutor_id=pk, credential__document_name='CERTIFICATE').first()
+        
+    #     if 'submit' in request.POST:
+    #         if 'ID' in request.POST:
+    #             ID.isVerified = True
+    #             ID.rejection_reason = "accepted"
+    #         else:
+    #             if 'reason_ID' in request.POST:
+    #                 if request.POST['reason_ID'] == '':
+    #                     messages.warning(request, "state why the ID is not being accepted")
+    #                     return redirect("auth:verify_tutor", pk)
+    #                 else:
+    #                     ID.rejection_reason = request.POST['reason_ID']
+                
+    #         if 'CV' in request.POST:
+    #             CV.isVerified = True
+    #             CV.rejection_reason = "accepted"
+    #         else:
+    #             if 'reason_CV' in request.POST:
+    #                 if request.POST['reason_CV'] == '':
+    #                     messages.warning(request, "state why the CV is not being accepted")
+    #                     return redirect("auth:verify_tutor", pk)
+    #                 else:
+    #                     CV.rejection_reason = request.POST['reason_CV']
+            
+    #         if 'CERTIFICATE' in request.POST:
+    #             cert.isVerified = True
+    #             cert.rejection_reason = "accepted"
+    #         else:
+    #             if 'reason_CERTIFICATE' in request.POST:
+    #                 if request.POST['reason_CERTIFICATE'] == '':
+    #                     messages.warning(request, "state why the certificate is not being accepted")
+    #                     return redirect("auth:verify_tutor", pk)
+    #                 else:
+    #                     cert.rejection_reason = request.POST['reason_CERTIFICATE']
+    #         ID.save()
+    #         CV.save()
+    #         cert.save()
+
+    #         #update verification tag
+    #         verification_status = {doc_status: None for doc_status, _ in TutorCredential.Credential.choices}
+    #         docObjs = VerificationStatus.objects.filter(credential__tutor__tutor_id = pk)
+            
+    #         for doc in docObjs:
+    #             verification_status[doc.credential.document_name] = doc.isVerified
+            
+    #         all_verified = all(status is not None and status for status in verification_status.values())
+    #         if all_verified:
+    #             tutor.isVerified = True
+    #             tutor.save()
+
+
+
+    #         # if ID and CV and cert and ID.isVerified and CV.isVerified and cert.isVerified:
+    #         #     tutor.isVerified = True
+    #         #     tutor.save()
+
+                
+    #     return render(request, self.template_name, {'docs':docs, 'tutor':tutor})
+    
 
 def logout_request(request):
     logout(request)

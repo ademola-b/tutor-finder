@@ -1,0 +1,97 @@
+{% extends "base.html" %}\
+{% load crispy_forms_tags %}
+
+{% block title %}Verification{% endblock title %}
+
+
+{% block body %}
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% block navbar %}{% include "partials/_navbar.html" %}{% endblock navbar %}
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      
+        {% block sidebar %}{% include "partials/_sidebar.html" %}{% endblock sidebar %}
+
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="d-xl-flex justify-content-between align-items-start">
+            <h2 class="text-dark font-weight-bold mb-2"> Verify {{tutor.user.get_full_name}} </h2>  
+          </div>
+          <div class="row">
+            <div class="col-md-12"> 
+              <div class="tab-content tab-transparent-content">
+                  <div class="row">
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                            {% include "partials/messages.html" %}
+                            {% if request.user.is_staff %}
+                                {% if docs %}
+                                    <h4 class="card-title">Uploaded Documents with status</h4>
+                                        <form action="" method="POST">
+                                            {% csrf_token %}
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                    <th>Document Name</th>
+                                                    <th>Document</th>
+                                                    <th> Action </th>
+                                                    <th>Reason</th>
+                                                    <th>Uploaded at</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for doc in docs %}
+                                                        <tr> 
+                                                            <td> {{doc.credential.document_name}}</td>
+                                                            <td> <a href="{{ doc.credential.document.url }}" target="_blank">{{ doc.credential.document.url }}</a> </td>
+                                                            <td>  <input type="checkbox" name="{{doc.credential.document_name}}" value="{{ doc.id }}" {% if doc.isVerified %}checked{% endif %}> </td>                 
+                                                            <td> <input type="text" name="reason_{{doc.credential.document_name | lower}}" value="" class="form-control" placeholder="Enter reason"> </td>
+                                                            <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </label> </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                            </table>
+                                        <button name="submit" class="btn btn-info btn-sm font-weight-medium auth-form-btn mt-3" type="submit">ASSESS</button>
+                                        </form>        
+                                {% else %}
+                                    <div class="d-xl-flex justify-content-between align-items-start">
+                                    <h3 class="text-danger font-weight-bold mb-2 mt-2"> No file found </h3> 
+                                    </div> 
+                                {% endif %}
+                            {% else %}
+                                <div class="d-xl-flex justify-content-between align-items-start">
+                                  <h3 class="text-danger font-weight-bold mb-2 mt-2"> You are not authorized to view this page </h3> 
+                                </div>   
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>   
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between py-2">
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
+              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+            </div>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+{% endblock body %}

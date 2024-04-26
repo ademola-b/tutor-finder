@@ -127,7 +127,6 @@ class SearchResult(ListView):
         context['form'] = self.form_class()
         return context
 
-
 @method_decorator(redirect_anonymous_user, name="get")
 @method_decorator(user_profile_checker, name="get")
 class TerminateSessionView(UpdateView):

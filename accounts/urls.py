@@ -1,7 +1,7 @@
 from django.urls import path
 from . views import (LoginView, RegisterView, logout_request,
-                     ProfileUpdateView,
-                      TutorFormBView, TutorVerificationView)
+                     ProfileUpdateView, TutorFormBView,
+                    TutorVerificationView, VerifyTutorView,)
 
 app_name = 'auth'
 urlpatterns = [
@@ -11,5 +11,6 @@ urlpatterns = [
     path('update-profile/', ProfileUpdateView.as_view(), name='update_profile'),
     path('tutor-profile/', TutorFormBView.as_view(), name='tutor_profile'),
     path('verify/', TutorVerificationView.as_view(), name='verification'),
+    path('verify/<uuid:pk>/', VerifyTutorView.as_view(), name='verify_tutor'),
 
 ]

@@ -1,6 +1,7 @@
 {% extends "base.html" %}\
 {% load crispy_forms_tags %}
 
+{% block modal-script %}{% include "partials/modal-scripts.html" %}{% endblock modal-script %}
 {% block title %}Verification{% endblock title %}
 
 
@@ -49,15 +50,24 @@
                                     </thead>
                                     <tbody>
                                       {% for tutor in tutors %}
-                                        <tr>
-                                          <td>{{tutor.user.get_full_name}}</td>
-                                          <td>{{tutor.specialized_subject}}</td>
-                                          <td>{{tutor.qualifications}}</td>
-                                          <td>{{tutor.experience_year}}</td>
+                                       <tr class="clickable-row" data-href="{% url "auth:verify_tutor" tutor.tutor_id %}" style="cursor:pointer">
+                                            <td>{{tutor.user.get_full_name}}</td>
+                                            <td>{{tutor.specialized_subject}}</td>
+                                            <td>{{tutor.qualifications}}</td>
+                                            <td>{{tutor.experience_year}}</td>
                                         </tr>
                                       {% endfor %}
                                     </tbody>
                                   </table>
+                                  <script>
+                                    $(document).ready(function($) {
+                                      console.log("hello");
+                                      $(".clickable-row").click(function() {
+                                        console.log("hello");
+                                          window.location = $(this).data("href");
+                                      });
+                                    });
+                                  </script>
                                 </div>
                               {% else %}
                                 <div class="d-xl-flex justify-content-between align-items-start">
