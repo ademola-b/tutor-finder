@@ -9,7 +9,7 @@ from django.views.generic import View, CreateView, UpdateView
 from finder.decorators import user_profile_checker, redirect_anonymous_user
 from . forms import (LoginForm, SignUpForm, UserUpdateForm, 
                      TutorUpdateForm, TutorCredentialsForm,
-                     UserForm, TutorForm)
+                     UserForm, TutorForm, StudentForm)
 from . models import Tutor, Student, TutorCredential, VerificationStatus
 # Create your views here.
 
@@ -290,17 +290,28 @@ class VerifyTutorView(View):
 class ProfileView(View):
     template_name = "auth/profile.html"
     user_form = UserForm
-    tutor_form = TutorForm
+    form2 = TutorForm
+    student_form = StudentForm
 
     def get(self, request):
         form = self.user_form(instance=request.user)
-        tutor_form = self.tutor_form(instance=request.user.tutor)
+        context = {'form':form}
+        if request.user.is_tutor:
+            form2 = self.form2(instance=request.user.tutor)
+        else:
+            form2 = self.student_form(instance=request.user.student)
+
+        context['form2'] = form2
         user_details = get_user_model().objects.get(user_id = request.user.user_id)
-        return render(request, self.template_name, {'form':form, 'user_details':user_details, 'tutor_form':tutor_form})
+        context['user_details'] = user_details
+        return render(request, self.template_name, context)
     
     def post(self, request):
         form = self.user_form(request.POST, request.FILES, instance=request.user)
-        tutor_form = self.tutor_form(request.POST, instance=request.user.tutor)
+        if request.user.is_tutor:
+            form2 = self.tutor_form(request.POST, instance=request.user.tutor)
+        else:
+            form2 = self.student_form(request.POST, instance=request.user.student)
         print(request.POST)
         if 'user' in request.POST:
             if form.is_valid():
@@ -309,8 +320,8 @@ class ProfileView(View):
                 messages.warning(request, f"{form.errors.as_text()}")
         
         if 'tut' in request.POST:
-            if tutor_form.is_valid():
-                tutor_form.save()
+            if form2.is_valid():
+                form2.save()
             else:
                 messages.warning(request, f"{form.errors.as_text()}")
 

@@ -56,7 +56,6 @@
                         </div>
                       </div>
                     </div>
-                    {% if request.user.is_tutor %}
                       <div class="col-6 grid-margin mb-5">
                         <div class="card">
                           <div class="card-body">
@@ -65,7 +64,7 @@
                                 <div class="wrapper pb-5 border-bottom">
                                   <form action="" method="POST">
                                       {% csrf_token %}
-                                      {{tutor_form | crispy}}
+                                      {{form2 | crispy}}
                                       <div class="mt-3">
                                           <button name="tut" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">UPDATE</button>
                                       </div>
@@ -77,13 +76,14 @@
                             </div>
                           </div>
                         </div>
+                        {% if request.user.is_tutor %}
                           <div class = "card">
                             <div class="card-body">
                               <h4 class="card-title mb-0">Documents</h4> <br/>
                             </div>
                           </div>
+                        {% endif %}
                       </div>
-                    {% endif %}
                   </div>   
               </div>
             </div>

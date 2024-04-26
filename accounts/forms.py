@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 
-from . models import Tutor, TutorCredential
+from . models import Tutor, TutorCredential, Student
 
 
 class LoginForm(AuthenticationForm):
@@ -46,7 +46,10 @@ class TutorForm(forms.ModelForm):
             'isVerified'
         ]
 
-
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        exclude = ['user']
 
 class UserUpdateForm(forms.ModelForm):
     phone = forms.CharField(required=True, widget=forms.NumberInput())
