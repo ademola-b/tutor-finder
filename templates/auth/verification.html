@@ -103,6 +103,7 @@
                                               <thead>
                                                 <tr>
                                                   <th>Document Name</th>
+                                                  <th>Document</th>
                                                   <th>Status</th>
                                                   <th>Reason</th>
                                                   <th> Action </th>
@@ -112,8 +113,9 @@
                                                 {% for doc in documents %}
                                                   <tr> 
                                                     <td> {{doc.credential.document_name}}</td>
-                                                  <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </label> </td>
-                                                  <td> {{doc.rejection_reason}} </td>
+                                                    <td> <a href="{{ doc.credential.document.url }}" target="_blank">view document</a> </td>
+                                                    <td> <label class="badge badge-{% if doc.isVerified %}success {% else %}danger{% endif %}"> {{doc.isVerified}} </label> </td>
+                                                    <td> {{doc.rejection_reason}} </td>
                                                 </tr>
                                                 {% endfor %}
                                               </tbody>

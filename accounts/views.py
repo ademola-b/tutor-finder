@@ -138,7 +138,10 @@ class TutorVerificationView(View):
             tutor = Tutor.objects.get(user=request.user)
             rec = TutorCredential.objects.filter(tutor=tutor, document_name=form.cleaned_data.get('document_name')).first()
             if rec:
-                messages.warning(request, "Selected Document already uploaded")
+                rec.document_name = form.cleaned_data.get('document_name')
+                rec.document = form.cleaned_data.get('document')
+                rec.save()
+                messages.warning(request, "Document Updated")
                 return redirect(reverse('auth:verification'))
             else:
                 instance = form.save(commit=False)
