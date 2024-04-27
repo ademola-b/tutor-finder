@@ -45,13 +45,13 @@
         <div class="collapse" id="auth">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{% url "finder:pending_session" %}"> Pending </a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Ongoing </a></li>
+            {% comment %} <li class="nav-item"> <a class="nav-link" href="#"> Ongoing </a></li> {% endcomment %}
             <li class="nav-item"> <a class="nav-link" href="{% url "finder:terminated_sessions" %}"> Ended/Terminated </a></li>
           </ul>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="pages/tables/basic-table.html">
+        <a class="nav-link" href="{% url "auth:users" %}">
           <span class="icon-bg"><i class="mdi mdi-account-supervisor menu-icon"></i></span>
           <span class="menu-title">Users</span>
         </a>

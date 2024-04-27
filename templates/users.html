@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block modal-script %}{% include "partials/modal-scripts.html" %}{% endblock modal-script %}
+{% block title %}Users{% endblock title %}
+
+
+{% block body %}
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% block navbar %}{% include "partials/_navbar.html" %}{% endblock navbar %}
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      
+        {% block sidebar %}{% include "partials/_sidebar.html" %}{% endblock sidebar %}
+
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="d-xl-flex justify-content-between align-items-start">
+            <h2 class="text-dark font-weight-bold mb-2"> Users </h2>  
+          </div>
+          <div class="row">
+            <div class="col-md-12"> 
+              <div class="tab-content tab-transparent-content">
+                  
+                  <div class="row">
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                              {% include "partials/messages.html" %}
+                           
+                            <div class="col-lg-9 col-sm-4 grid-margin  grid-margin-lg-0">
+                              <div class="wrapper pb-5 border-bottom">
+                                {% if users %}
+                                    <div>
+                                        <label for="user-type-filter">Filter by User Type:</label>
+                                        <select id="user-type-filter">
+                                            <option value="all">All</option>
+                                            <option value="student">Student</option>
+                                            <option value="tutor">Tutor</option>
+                                        </select>
+                                    </div>
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Gender</th>
+                                                <th>Address</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="user-table-body">
+                                            {% for user in users %}
+                                                <tr class="clickable" data-href="{% url "auth:user_detail" user.user_id %}" style="cursor:pointer">
+                                                    <td>{{user.get_full_name}}</td>
+                                                    <td>{{user.email}}</td>
+                                                    <td>{{user.phone}}</td>
+                                                    <td>{{user.gender}}</td>
+                                                    <td>{{user.address}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <script>
+                                        $(document).ready(function($){
+                                            $('.clickable').click(function(){
+                                                window.location = $(this).data('href');
+                                            });
+                                        });
+                                    </script>
+                                {% else %}
+                                    <div class="d-xl-flex justify-content-between align-items-start">
+                                        <h3 class="text-warning font-weight-bold mb-2 mt-2"> No User found </h3> 
+                                    </div> 
+                                {% endif %}
+                              </div>
+                             
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>   
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        {% include "partials/_footer.html" %}
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#user-type-filter').change(function() {
+            console.log("hello");
+            var userType = $(this).val();
+            var url = "{% url 'auth:get_users' %}?user_type=" + userType;
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    // Clear existing table rows
+                    $('#user-table-body').empty();
+
+                    console.log($('#user-table-body'));
+                    
+                    console.log(typeof data);
+                    //console.log(data);
+
+                    var jsonData = JSON.parse(data);
+                    console.log(jsonData);
+
+                    // Append fetched users to the table
+                    jsonData.forEach(function(user) {
+                        fields = user.fields;
+                        var row = "<tr class='clickable' data-href='{% url 'auth:user_detail' user.pk %}' style='cursor:pointer'>" +
+                            '<td>' + fields.first_name + " " + fields.last_name + '</td>' +
+                            '<td>' + fields.email + '</td>' +
+                            '<td>' + fields.phone + '</td>' +
+                            '<td>' + fields.gender + '</td>' +
+                            '<td>' + fields.address + '</td>' +
+                            '</tr>';
+                        $('#user-table-body').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $(document).on("click", ".clickable", function() {
+            window.location.href = $(this).data("href");
+        });
+    });    
+</script>
+
+{% endblock body %}

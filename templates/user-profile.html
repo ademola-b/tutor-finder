@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block modal-script %}{% include "partials/modal-scripts.html" %}{% endblock modal-script %}
+{% block title %}User Detail{% endblock title %}
+
+
+{% block body %}
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% block navbar %}{% include "partials/_navbar.html" %}{% endblock navbar %}
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      
+        {% block sidebar %}{% include "partials/_sidebar.html" %}{% endblock sidebar %}
+
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="d-xl-flex justify-content-between align-items-start">
+            <h2 class="text-dark font-weight-bold mb-2"> {{detail.user.get_full_name}} Detail </h2>  
+          </div>
+          <div class="row">
+            <div class="col-md-12"> 
+              <div class="tab-content tab-transparent-content">
+                  
+                  <div class="row">
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                              {% include "partials/messages.html" %}
+                           
+                                {% if detail %}
+                                    <div class="col-sm-10 align-items-center mb-4">
+                                        <img src="{{detail.user.profile_pic.url}}" alt="Profile Pic" width="150px" height="150px" style="border-radius: 50%;">
+                                    </div>
+                                    <div class="col-6 grid-margin">
+                                        <p class="text-dark">USERNAME: {{detail.user.username}} </p>
+                                        <p class="text-dark">NAME: {{detail.user.get_full_name}} </p>
+                                        <p class="text-dark">EMAIL: {{detail.user.email}} </p>
+                                        <p class="text-dark">PHONE: {{detail.user.phone}} </p>
+                                        <p class="text-dark">GENDER: {{detail.user.gender}} </p>
+                                        <p class="text-dark">ADDRESS: {{detail.user.address}} </p>
+                                    </div>
+                                    <div class="col-6 grid-margin">
+                                        {% if detail.user.is_tutor %}
+                                            <p class="text-dark">BIO: {{detail.bio}} </p> 
+                                            <p class="text-dark">Specialized Subject: {{detail.specialized_subject}} </p> 
+                                            <p class="text-dark">Qualifications: {{detail.qualifications}} </p> 
+                                            <p class="text-dark">Experience Year: {{detail.experience_year}} </p> 
+                                            <p class="text-dark">Hourly Rate: {{detail.hourly_rate}} </p> 
+                                            <p class="text-dark">Location: {{detail.location}} </p> 
+                                            <p class="text-dark">Availability: {{detail.isAvailable}} </p> 
+                                        {% else %}
+                                            <p class="text-dark">BIO: {{detail.bio}} </p> 
+                                            <p class="text-dark">Education Level: {{detail.education_level}} </p> 
+                                            <p class="text-dark">Subject Interest: {{detail.subject_interest}} </p> 
+                                        {% endif %}
+                                    </div>
+                                    
+                                    
+                                {% else %}
+                                    <div class="d-xl-flex justify-content-between align-items-start">
+                                        <h3 class="text-warning font-weight-bold mb-2 mt-2"> No Detail found </h3> 
+                                    </div> 
+                                {% endif %}
+                             
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>   
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        {% include "partials/_footer.html" %}
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+{% endblock body %}

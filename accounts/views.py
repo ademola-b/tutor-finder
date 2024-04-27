@@ -1,10 +1,13 @@
+from typing import Any
+from django.core.serializers import serialize
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db import IntegrityError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views.generic import View, CreateView, UpdateView
+from django.views.generic import View, CreateView, UpdateView, ListView, DetailView
 
 from finder.decorators import user_profile_checker, redirect_anonymous_user
 from . forms import (LoginForm, SignUpForm, UserUpdateForm, 
@@ -286,7 +289,8 @@ class VerifyTutorView(View):
 
                 
     #     return render(request, self.template_name, {'docs':docs, 'tutor':tutor})
-    
+
+@method_decorator(redirect_anonymous_user, name="get")
 class ProfileView(View):
     template_name = "auth/profile.html"
     user_form = UserForm
@@ -327,6 +331,46 @@ class ProfileView(View):
 
         messages.success(request, "Profile successfully updated")
         return redirect(reverse("auth:profile"))
+
+@method_decorator(redirect_anonymous_user, name="get")
+class UsersList(ListView):
+    model = get_user_model()
+    template_name = "users.html"
+    context_object_name = "users"
+
+def get_users(request):
+    type = request.GET.get('user_type')
+    if type == 'student':
+        users = get_user_model().objects.filter(is_tutor=False)
+    elif type == 'tutor':
+        users = get_user_model().objects.filter(is_tutor=True)
+    else:
+        users = get_user_model().objects.all()
+
+    # convert retrieved data to json
+    serialized_user = serialize('json', users)
+    return JsonResponse(serialized_user, safe=False)
+
+@method_decorator(redirect_anonymous_user, name="get")
+class UserDetail(DetailView):
+    template_name = "user-profile.html"
+    context_object_name = "detail"
+
+    def get_object(self, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        user = get_object_or_404(get_user_model(), user_id=pk)
+        try:
+            if user.is_tutor:
+                obj = Tutor.objects.get(user=user)
+            else:
+                obj = Student.objects.get(user=user)
+            return obj
+        except:
+            messages.error(self.request, "User Details Not Found")
+
+
+
+
 
 def logout_request(request):
     logout(request)
