@@ -79,7 +79,6 @@ class TutorUpdateForm(forms.ModelForm):
             "location"
         ]
 
-    
 
 class TutorCredentialsForm(forms.ModelForm):
     class Meta:

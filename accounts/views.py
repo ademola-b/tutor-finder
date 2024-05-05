@@ -368,10 +368,6 @@ class UserDetail(DetailView):
         except:
             messages.error(self.request, "User Details Not Found")
 
-
-
-
-
 def logout_request(request):
     logout(request)
     return redirect('auth:login')
