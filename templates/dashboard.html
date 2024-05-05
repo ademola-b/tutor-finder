@@ -23,7 +23,23 @@
             <div class="col-md-12"> 
               <div class="tab-content tab-transparent-content">
                 {% include "partials/messages.html" %}
-                {% if sessions %}
+                {% if request.user.is_staff %}
+                  <div class="row">
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="d-flex justify-content-between align-items-center mb-4">
+                                  <h4 class="card-title mb-0">Welcome, Admin, <br/> <br/> Click <a href="{% url "auth:verification" %}"> HERE </a>  to Verify Tutors </h4>
+                              </div> 
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  {% if sessions %}
                   {% if request.user.tutor %}
                     <div class="row">
                       {% for session in sessions %}
@@ -110,7 +126,7 @@
                       </div>
                     
                   {% endif %}
-                  {% else %}
+                {% else %}
                     <div class="row">
                         <div class="col-12 grid-margin">
                           <div class="card">
@@ -130,7 +146,10 @@
                         </div>
                     </div>
               
-                  {% endif %}  
+                {% endif %} 
+                {% endif %}
+
+                 
                      
               </div>
             </div>
